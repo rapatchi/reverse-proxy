@@ -97,9 +97,9 @@ namespace Microsoft.ReverseProxy.Service.Proxy
 
             // :: Step 1: Create outgoing HttpRequestMessage
             var upgradeFeature = context.Features.Get<IHttpUpgradeFeature>();
-            var isUpgradeRequest = (upgradeFeature?.IsUpgradableRequest ?? false)
+            var isUpgradeRequest = (upgradeFeature?.IsUpgradableRequest ?? false);
                 // Mitigate https://github.com/microsoft/reverse-proxy/issues/255, IIS considers all requests upgradeable.
-                && string.Equals("WebSocket", context.Request.Headers[HeaderNames.Upgrade], StringComparison.OrdinalIgnoreCase);
+                // && string.Equals("WebSocket", context.Request.Headers[HeaderNames.Upgrade], StringComparison.OrdinalIgnoreCase);
 
             var destinationRequest = CreateRequestMessage(context, destinationPrefix, isUpgradeRequest, proxyOptions.Transforms.RequestTransforms);
 

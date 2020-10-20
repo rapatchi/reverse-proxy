@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,14 +51,18 @@ namespace Microsoft.ReverseProxy.Sample
                     Id = "cluster1",
                     Destinations =
                     {
-                        { "destination1", new Destination() { Address = "https://localhost:10000" } }
+                        { "destination1", new Destination() { Address = "<API-SERVER-URL>" } }
+                    },
+                    HttpClient = new ProxyHttpClientOptions
+                    {
+                        ClientCertificate = new X509Certificate2(Convert.FromBase64String("<CA-DATA>"))
                     }
                 }
             };
 
             services.AddReverseProxy()
-                .LoadFromMemory(routes, clusters)
-                .AddProxyConfigFilter<CustomConfigFilter>();
+                .LoadFromMemory(routes, clusters);
+            // .AddProxyConfigFilter<CustomConfigFilter>();
         }
 
         /// <summary>
@@ -85,9 +91,9 @@ namespace Microsoft.ReverseProxy.Sample
 
                         return next();
                     });
-                    proxyPipeline.UseAffinitizedDestinationLookup();
-                    proxyPipeline.UseProxyLoadBalancing();
-                    proxyPipeline.UseRequestAffinitizer();
+                    // proxyPipeline.UseAffinitizedDestinationLookup();
+                    // proxyPipeline.UseProxyLoadBalancing();
+                    // proxyPipeline.UseRequestAffinitizer();
                 });
             });
         }
